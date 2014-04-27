@@ -6,7 +6,7 @@ require 'materialized_views/version'
 Gem::Specification.new do |spec|
   spec.name          = "materialized_views"
   spec.version       = MaterializedViews::VERSION
-  spec.authors       = ["Teddy"]
+  spec.authors       = ["Teddy Widom"]
   spec.email         = ["theodore.widom@gmail.com"]
   spec.description   = %q{TODO: Write a gem description}
   spec.summary       = %q{TODO: Write a gem summary}
@@ -20,4 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "activerecord"
+  spec.add_development_dependency "pg"
 end

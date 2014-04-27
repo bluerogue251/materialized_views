@@ -1,4 +1,4 @@
-Copyright (c) 2014 Teddy
+Copyright (c) 2014 Teddy Widom
 
 MIT License
 

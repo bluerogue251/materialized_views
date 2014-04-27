@@ -1,0 +1,7 @@
+adapter: postgresql
+encoding: unicode
+host: localhost
+pool: 5
+username: teddy
+password: #
+database: materialized_views_test
