@@ -1,15 +1,23 @@
 require "bundler/gem_tasks"
 require 'active_record'
 require 'yaml'
+require 'materialized_views'
 
 dbconfig = YAML::load(File.open('db/config.yml'))
 ActiveRecord::Base.establish_connection(dbconfig)
 
-# require_relative 'db/migrate/001_create_unmaterialized_clients'
-# require 'db/migrate/002_create_materialized_clients'
-
-task :migrate do
-  ActiveRecord::Migrator.migrate('db/migrate')
-  # CreateUnmaterializedClients.new.migrate
-  # CreateMaterializedClients.new.migrate!
-end
+# namespace :db do
+#   task :create do
+#     system 'createdb materialized_views_test'
+#   end
+#
+#   task :drop do
+#     system 'dropdb materialized_views_test'
+#   end
+#
+#   task :migrate do
+#     system 'dropdb materialized_views_test'
+#     system 'createdb materialized_views_test'
+#     ActiveRecord::Migrator.migrate('db/migrate')
+#   end
+# end
