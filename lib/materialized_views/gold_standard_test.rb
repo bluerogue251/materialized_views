@@ -1,12 +1,12 @@
 module MaterializedViews
 
-  def gold_standard_test(views)
+  def self.gold_standard_test(views)
     result = ''
     views.each { |view| result << GoldStandardTest.new(view).result }
     result
   end
 
-  def list
+  def self.list
     all_views = ActiveRecord::Base.connection.query('SELECT viewname
                                                      FROM pg_views
                                                      WHERE schemaname = ANY (current_schemas(false))',
