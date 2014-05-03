@@ -1,7 +1,8 @@
 # materialized_views [![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
 
 NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
-Helper methods for creating auto-updating materialized views with ActiveRecord::Migration
+
+Helper methods for creating auto-updating materialized views with `ActiveRecord::Migration`
 
 ## Installation
 
