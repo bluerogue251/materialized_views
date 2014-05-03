@@ -77,9 +77,9 @@ This one is a good candidate for a Rake task.  It does not go inside a migration
 
 Syntax:
 
-    materialized_views = MaterializedViews.list_all(path_to_structure_dot_sql_file)
+    views = MaterializedViews.list
 
-    MaterializedViews.gold_standard_test(materialized_views)
+    MaterializedViews.gold_standard_test(views)
 
 Example:
 
