@@ -87,9 +87,9 @@ Example:
     namespace :materialized do
       desc 'Tests that materialized views are up to date'
       task test: :environment do
-        view_names = MaterializedViews.list('config/structure.sql')
-        MaterializedViews.gold_standard_test(view_names)
-        # output goes to materialized_view_report.txt
+        view_names = MaterializedViews.list
+        result = MaterializedViews.gold_standard_test(view_names)
+        puts result # or you could email the result to yourself, or put it into a file for later viewing
       end
     end
 
