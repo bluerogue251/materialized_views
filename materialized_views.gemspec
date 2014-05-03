@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = MaterializedViews::VERSION
   spec.authors       = ["Teddy Widom"]
   spec.email         = ["theodore.widom@gmail.com"]
-  spec.description   = %q{Write a gem description}
-  spec.summary       = %q{Write a gem summary}
+  spec.description   = %q{Create auto-updating materialized views with ActiveRecord::Migration}
+  spec.summary       = %q{Create auto-updating materialized views with ActiveRecord::Migration}
   spec.homepage      = ""
   spec.license       = "MIT"
 
