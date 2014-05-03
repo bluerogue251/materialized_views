@@ -59,7 +59,7 @@ module MaterializedViews
         columns     = @mat.column_names - ['tsv']
         mat_columns = columns.map { |c|   "#{@mat_name}.#{c}" }.sort.join ', '
         unm_columns = columns.map { |c| "#{@unmat_name}.#{c}" }.sort.join ', '
-        count = @unmat.joins(@unmat_name.to_sym).where("concat(#{mat_columns}) != concat(#{unm_columns})"}.count
+        count = @unmat.joins(@unmat_name.to_sym).where("concat(#{mat_columns}) != concat(#{unm_columns})").count
         "#{count} rows differ"
       end
   end
