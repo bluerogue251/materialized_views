@@ -78,7 +78,6 @@ This one is a good candidate for a Rake task.  It does not go inside a migration
 Syntax:
 
     views = MaterializedViews.list
-
     MaterializedViews.gold_standard_test(views)
 
 Example:

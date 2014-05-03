@@ -39,7 +39,7 @@ module MaterializedViews
 
       def unmaterialized_class
         eval("class #{@unm_name.classify} < ActiveRecord::Base
-                self.table_name = #{@unm_name}
+                self.table_name = '#{@unm_name}'
               end")
       end
 
