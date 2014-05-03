@@ -1,6 +1,6 @@
 # materialized_views [![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
 
-TODO: Write a gem description
+ActiveRecord::Migration helpers for creating materialized views and the triggers necessary to keep them up to date. Only works on Postgres at the moment.
 
 ## Installation
 
