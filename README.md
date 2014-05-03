@@ -4,7 +4,7 @@ NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
 
 Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views in Postgres.
 
-Can perform a gold standard test comparing your materialized view to its unmaterialized version, to ensure it is up-to-date.
+Can perform a gold standard test to check if a materialized view is up-to-date with its unmaterialized version.
 
 ## Installation
 
@@ -71,21 +71,30 @@ Example:
 
     create_1_to_n_refresh_triggers_for 'order_summaries', 'customers', 'orders', 'code', 'customer_id'
 
-### Test if a materialized view is up-to-date with its unmaterialized version
+### Test if a materialized view is up-to-date
+
+This one is a good candidate for a Rake task.  It does not go inside a migration.
+
 Syntax:
 
-    # get an array of all the materialized views in your structure.sql file
-    MaterializedViews.list(path_to_structure_dot_sql_file)
+    materialized_views = MaterializedViews.list_all(path_to_structure_dot_sql_file)
 
-    # given an array of materialized view names, generate a report
-    #   comparing the unmaterialized to the materialized versions.
-    MaterializedViews.gold_standard_test(table_names)
+    MaterializedViews.gold_standard_test(materialized_views)
 
 Example:
 
-    view_names = MaterializedViews.list('config/structure.sql')
-    MaterializedViews.gold_standard_test(view_names)
-    # output goes to materialized_view_report.txt
+    # in lib/tasks/materialized_view_test.rake
+    namespace :materialized do
+      desc 'Tests that materialized views are up to date'
+      task test: :environment do
+        view_names = MaterializedViews.list('config/structure.sql')
+        MaterializedViews.gold_standard_test(view_names)
+        # output goes to materialized_view_report.txt
+      end
+    end
+
+    # Then at the console in your project root directory:
+    $ rake materialized:test
 
 ### Add a tsvector column for faster full text searching:
 
