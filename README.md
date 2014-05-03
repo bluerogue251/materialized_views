@@ -4,6 +4,8 @@ NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
 
 Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views in Postgres.
 
+Can perform a gold standard test comparing your materialized view to its unmaterialized version, to ensure it is up-to-date.
+
 ## Installation
 
 Add `gem 'materialized_views'` to your application's Gemfile and then execute `$ bundle`
@@ -68,6 +70,22 @@ Syntax:
 Example:
 
     create_1_to_n_refresh_triggers_for 'order_summaries', 'customers', 'orders', 'code', 'customer_id'
+
+### Test if a materialized view is up-to-date with its unmaterialized version
+Syntax:
+
+    # get an array of all the materialized views in your structure.sql file
+    MaterializedViews.list(path_to_structure_dot_sql_file)
+
+    # given an array of materialized view names, generate a report
+    #   comparing the unmaterialized to the materialized versions.
+    MaterializedViews.gold_standard_test(table_names)
+
+Example:
+
+    view_names = MaterializedViews.list('config/structure.sql')
+    MaterializedViews.gold_standard_test(view_names)
+    # output goes to materialized_view_report.txt
 
 ### Add a tsvector column for faster full text searching:
 
