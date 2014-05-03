@@ -30,7 +30,7 @@ module MaterializedViews
     private
 
       def materialized_name
-        @unm[/(.*)(_unmaterialized\z)/]
+        @unm_name[/(.*)(_unmaterialized\z)/]
         $1
       end
 
