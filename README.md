@@ -2,28 +2,7 @@
 
 NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
 
-Extends `ActiveRecord::Migration` with the following methods for creating auto-updating materialized views:
-
-    materialize(materialized_view_name, view_definition)
-
-    create_refresh_row_function_for(materialized_view_name, options={})
-
-    create_1_to_1_refresh_triggers_for(
-                                        materialized_view_name,
-                                        origin_table_name,
-                                        foreign_key_name
-                                      )
-
-    create_1_to_n_refresh_triggers_for(
-                                        materialized_view_name,
-                                        origin_table_name,
-                                        join_table_name,
-                                        join_table_materialized_view_foreign_key,
-                                        join_table_origin_table_foreign_key
-                                      )
-
-    add_tsvector_to(materialized_view_name, searchable_column_array)
-
+Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views.
 
 ## Installation
 
@@ -44,6 +23,11 @@ Or install it yourself as:
 Place any of the below methods within an `ActiveRecord::Migration` class.
 
 ### Create a materialized view:
+Syntax:
+
+    materialize(materialized_view_name, view_definition)
+
+Example:
 
     materialize 'order_summaries', 'select * from orders order by placed_on'
 
@@ -51,6 +35,12 @@ This creates a regular view `order_summaries_unmaterialized`, and a table `order
 
 ### Create a function to refresh a row of the materialized view
 The refreshed data comes from the underlying, unmaterialized version
+
+Syntax:
+
+    create_refresh_row_function_for(materialized_view_name, options={})
+
+Example:
 
     create_refresh_row_function_for 'order_summaries'
 
@@ -60,13 +50,40 @@ If your materialized view's primary key is not an integer or is not named 'id':
 
 ### Create 1 to 1 refresh triggers
 
+Syntax:
+
+    create_1_to_1_refresh_triggers_for(
+                                        materialized_view_name,
+                                        origin_table_name,
+                                        foreign_key_name
+                                      )
+
+Example:
+
     create_1_to_1_refresh_triggers_for 'order_summaries', 'orders', 'id'
 
 ### Create 1 to n refresh triggers
+Syntax:
+
+    create_1_to_n_refresh_triggers_for(
+                                        materialized_view_name,
+                                        origin_table_name,
+                                        join_table_name,
+                                        join_table_materialized_view_foreign_key,
+                                        join_table_origin_table_foreign_key
+                                      )
+
+Example:
 
     create_1_to_n_refresh_triggers_for 'order_summaries', 'customers', 'orders', 'code', 'customer_id'
 
 ### Add a tsvector column for faster full text searching:
+
+Syntax:
+
+    add_tsvector_to(materialized_view_name, searchable_column_array)
+
+Example:
 
     add_tsvector_to 'order_summaries', %w(order_code customer payment_status shipping_status)
 
