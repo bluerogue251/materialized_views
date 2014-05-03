@@ -18,10 +18,7 @@ module MaterializedViews
 
     def initialize(unmaterialized_name)
       @unm_name = unmaterialized_name
-      @unm      = unmaterialized_class
       @mat_name = materialized_name
-      @mat      = materialized_class
-      @primary_key = @mat.primary_key
     end
 
     def result
@@ -37,21 +34,6 @@ module MaterializedViews
         $1
       end
 
-      def unmaterialized_class
-        eval("class #{@unm_name.classify} < ActiveRecord::Base
-                self.table_name = '#{@unm_name}'
-              end")
-        @unm_name.classify.constantize
-      end
-
-      def materialized_class
-        classified = @mat_name.singularize.classify
-        eval("class #{classified} < ActiveRecord::Base
-                has_one :#{@unm_name}, foreign_key: '#{@primary_key}'
-              end")
-        classified.constantize
-      end
-
       def total_count_check
         "Materialized count is #{@mat.count}.\n" +
         "Unmaterialized count is #{@unm.count}.\n" +
@@ -59,11 +41,18 @@ module MaterializedViews
       end
 
       def row_comparison
+        count = ActiveRecord::Base.connection.query(row_comparison_query).first[0]
+        "#{count} rows differ"
+      end
+
+      def row_comparison_query
         columns     = @mat.column_names - ['tsv']
         mat_columns = columns.map { |c|   "#{@mat_name}.#{c}" }.sort.join ', '
         unm_columns = columns.map { |c| "#{@unm_name}.#{c}" }.sort.join ', '
-        count = @mat.joins(@unm_name.to_sym).where("concat(#{mat_columns}) != concat(#{unm_columns})").count
-        "#{count} rows differ"
+        "select count(*) from #{@mat_name}
+         LEFT OUTER JOIN #{@unm_name}
+           ON #{@mat_name}.#{@primary_key} = #{@unm_name}.#{@primary_key}
+         WHERE concat(#{mat_columns}) != concat(#{unm_columns})"
       end
   end
 end
