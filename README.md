@@ -2,7 +2,28 @@
 
 NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
 
-Helper methods for creating auto-updating materialized views with `ActiveRecord::Migration`
+Extends `ActiveRecord::Migration` with the following methods for creating auto-updating materialized views:
+
+    materialize(materialized_view_name, view_definition)
+
+    create_refresh_row_function_for(materialized_view_name, options={})
+
+    create_1_to_1_refresh_triggers_for(
+                                        materialized_view_name,
+                                        origin_table_name,
+                                        foreign_key_name
+                                      )
+
+    create_1_to_n_refresh_triggers_for(
+                                        materialized_view_name,
+                                        origin_table_name,
+                                        join_table_name,
+                                        join_table_materialized_view_foreign_key,
+                                        join_table_origin_table_foreign_key
+                                      )
+
+    add_tsvector_to(materialized_view_name, searchable_column_array)
+
 
 ## Installation
 
@@ -24,35 +45,33 @@ Place any of the below methods within an `ActiveRecord::Migration` class.
 
 ### Create a materialized view:
 
-Syntax:  `materialize(view_name_string, view_definition_string)`.
+    materialize 'order_summaries', 'select * from orders order by placed_on'
 
-Example: `materialize 'order_summaries', 'select * from orders order by placed_on'`
-
-This creates a regular view `order_summaries_unmaterialized`, and a its materialized version `order_summaries`.
+This creates a regular view `order_summaries_unmaterialized`, and a table `order_summaries` to hold its materialized version.
 
 ### Create a function to refresh a row of the materialized view
 The refreshed data comes from the underlying, unmaterialized version
 
-Example: `create_refresh_row_function_for 'order_summaries'`
+    create_refresh_row_function_for 'order_summaries'
 
 If your materialized view's primary key is not an integer or is not named 'id':
-    `create_refresh_row_function_for 'order_summaries', pk: 'order_id', pk_type: 'text'`
+
+    create_refresh_row_function_for 'order_summaries', pk: 'order_code', pk_type: 'text'
+
+### Create 1 to 1 refresh triggers
+
+    create_1_to_1_refresh_triggers_for 'order_summaries', 'orders', 'id'
+
+### Create 1 to n refresh triggers
+
+    create_1_to_n_refresh_triggers_for 'order_summaries', 'customers', 'orders', 'code', 'customer_id'
 
 ### Add a tsvector column for faster full text searching:
-Of course, you still need to configure `pg_search` or whatever you are using for full text search to actually use the tsvector column.
-This method assumes you have a class method on your model called #searchable with the column names you want to search over.
 
-Example:
+    add_tsvector_to 'order_summaries', %w(order_code customer payment_status shipping_status)
 
-    class OrderSummaries < ActiveRecord::Base
-      def self.searchable
-        %i(order_id customer payment_status shipping_status)
-      end
-    end
+And then configure `pg_search` or whatever you are using to use the resulting tsvector column.
 
-    Then in your migration:
-
-    add_tsvector_to(OrderSummaries)
 
 ## Note on materialized views vs. tables
 
