@@ -1,4 +1,4 @@
-require "materialized_views/version"
+require 'materialized_views/version'
 require 'active_record'
 
 module MaterializedViews
