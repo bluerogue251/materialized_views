@@ -1,5 +1,4 @@
-# MaterializedViews
-[![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
+# materialized_views [![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
 
 TODO: Write a gem description
 
