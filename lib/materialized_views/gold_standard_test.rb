@@ -19,11 +19,11 @@ module MaterializedViews
     def initialize(unmaterialized_name)
       @unm_name = unmaterialized_name
       @mat_name = materialized_name
+      @primary_key = 'id'
     end
 
     def result
-      result = "\n\n\n{@mat}\n"
-      result += total_count_check
+      result = "\n\n\n{@mat_name}\n"
       result += row_comparison
     end
 
@@ -32,12 +32,6 @@ module MaterializedViews
       def materialized_name
         @unm_name[/(.*)(_unmaterialized\z)/]
         $1
-      end
-
-      def total_count_check
-        "Materialized count is #{@mat.count}.\n" +
-        "Unmaterialized count is #{@unm.count}.\n" +
-        "Difference is #{@mat.count - @unm.count}\n"
       end
 
       def row_comparison
@@ -49,8 +43,8 @@ module MaterializedViews
         columns     = @mat.column_names - ['tsv']
         mat_columns = columns.map { |c|   "#{@mat_name}.#{c}" }.sort.join ', '
         unm_columns = columns.map { |c| "#{@unm_name}.#{c}" }.sort.join ', '
-        "select count(*) from #{@mat_name}
-         LEFT OUTER JOIN #{@unm_name}
+        "select count(*) from #{@unm_name}
+         LEFT OUTER JOIN #{@mat_name}
            ON #{@mat_name}.#{@primary_key} = #{@unm_name}.#{@primary_key}
          WHERE concat(#{mat_columns}) != concat(#{unm_columns})"
       end
