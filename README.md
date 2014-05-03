@@ -6,17 +6,9 @@ Extends `ActiveRecord::Migration` with methods for creating auto-updating materi
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add `gem 'materialized_views'` to your application's Gemfile and then execute `$ bundle`
 
-    gem 'materialized_views'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install materialized_views
+Or install it yourself as `$ gem install materialized_views`
 
 ## Usage
 
