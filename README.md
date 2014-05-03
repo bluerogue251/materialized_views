@@ -2,7 +2,7 @@
 
 NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
 
-Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views.
+Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views in Postgres.
 
 ## Installation
 
