@@ -1,10 +1,10 @@
 module MaterializedViews
   def add_tsvector_to(model)
-    execute "alter table #{model.table_name} add column tsv tsvector"
+    execute "alter table #{model.to_s.tableize} add column tsv tsvector"
 
     execute "create trigger tsvectorupdate
              before insert or update
-             on #{model.table_name} for each row execute procedure
+             on #{model.to_s.tableize} for each row execute procedure
              tsvector_update_trigger(tsv, 'pg_catalog.simple', #{model.searchable.join ', '});"
   end
 
