@@ -67,7 +67,7 @@ module MaterializedViews
   # mttfk Middle table foreign key pointing to the target table
   # mtofk Middle table foreign key pointing to the origin table
   # otpk  Origin table primary key
-  def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, pk)
+  def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, otpk)
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
