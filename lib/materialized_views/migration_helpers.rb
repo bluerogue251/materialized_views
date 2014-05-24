@@ -31,12 +31,12 @@ module MaterializedViews
   end
 
   # Origin table primary key
-  def create_1_to_1_refresh_triggers_for(tt, ot, fk, otpk)
+  def create_1_to_1_refresh_triggers_for(tt, ot, fk)
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
-               if old.#{otpk} = new.#{otpk} then
+               if old.#{fk} = new.#{fk} then
                  perform refresh_#{tt}_row(new.#{fk});
                else
                  perform refresh_#{tt}_row(old.#{fk});
