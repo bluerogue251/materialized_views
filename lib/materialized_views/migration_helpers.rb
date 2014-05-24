@@ -84,7 +84,7 @@ module MaterializedViews
              returns trigger
              language 'plpgsql' as $$
              begin
-               perform refresh_#{tt}_row(#{mttfk}) from #{mt} where #{mtotfk} = new.id;
+               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.id;
              return null;
              end $$;"
 
@@ -92,7 +92,7 @@ module MaterializedViews
              returns trigger
              language 'plpgsql' as $$
              begin
-               perform refresh_#{tt}_row(#{mttfk}) from #{mt} where #{mtotfk} = old.id;
+               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.id;
              return null;
              end $$;"
 
