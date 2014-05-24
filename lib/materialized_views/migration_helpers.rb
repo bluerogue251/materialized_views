@@ -65,38 +65,23 @@ module MaterializedViews
 
   # mttfk Middle table foreign key pointing to the target table
   # mtofk Middle table foreign key pointing to the origin table
-  def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk)
+  # pk  Middle table primary key
+  def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, pk)
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
                if old.id = new.id then
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.id;
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{pk};
                else
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.id;
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.id;
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.#{pk};
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{pk};
                end if;
                return null;
              end
              $$;"
 
-    execute "create or replace function #{tt}_insert_#{ot}()
-             returns trigger
-             language 'plpgsql' as $$
-             begin
-               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.id;
-             return null;
-             end $$;"
-
-    execute "create or replace function #{tt}_delete_#{ot}()
-             returns trigger
-             language 'plpgsql' as $$
-             begin
-               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.id;
-             return null;
-             end $$;"
-
-    create_triggers_on(tt, ot, ['insert', 'update', 'delete'])
+    create_triggers_on(tt, ot, ['update'])
   end
 
   def create_triggers_on(tt, ot, trigger_types)
