@@ -26,7 +26,6 @@ module MaterializedViews
              begin
                delete from #{tt} where #{tt}.#{pk} = row_id;
                insert into #{tt} (select * from #{tt}_unmaterialized unm where unm.#{pk} = row_id);
-               update #{tt} set #{pk} = #{pk} where #{tt}.#{pk} = row_id;
              end $$;"
   end
 
@@ -68,6 +67,15 @@ module MaterializedViews
   # mtofk Middle table foreign key pointing to the origin table
   # otpk  Origin table primary key
   def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, otpk)
+    execute "create or replace function #{tt}_insert_#{ot}()
+             returns trigger
+             language 'plpgsql' as $$
+             begin
+               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{otpk};
+             return null;
+             end
+             $$;"
+
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
@@ -82,7 +90,16 @@ module MaterializedViews
              end
              $$;"
 
-    create_triggers_on(tt, ot, ['update'])
+    execute "create or replace function #{tt}_delete_#{ot}()
+             returns trigger
+             language 'plpgsql' as $$
+             begin
+               perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.#{otpk};
+             return null;
+             end
+             $$;"
+
+    create_triggers_on(tt, ot, ['insert', 'update', 'delete'])
   end
 
   def create_triggers_on(tt, ot, trigger_types)
