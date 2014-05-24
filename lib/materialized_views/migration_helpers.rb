@@ -80,7 +80,23 @@ module MaterializedViews
              end
              $$;"
 
-    create_triggers_on(tt, ot, ['update'])
+    execute "create or replace function #{tt}_insert_#{ot}()
+             returns trigger
+             language 'plpgsql' as $$
+             begin
+               perform refresh_#{tt}_row(#{mttfk}) from #{mt} where #{mtotfk} = new.id;
+             return null;
+             end $$;"
+
+    execute "create or replace function #{tt}_delete_#{ot}()
+             returns trigger
+             language 'plpgsql' as $$
+             begin
+               perform refresh_#{tt}_row(#{mttfk}) from #{mt} where #{mtotfk} = old.id;
+             return null;
+             end $$;"
+
+    create_triggers_on(tt, ot, ['insert', 'update', 'delete'])
   end
 
   def create_triggers_on(tt, ot, trigger_types)
