@@ -30,12 +30,13 @@ module MaterializedViews
              end $$;"
   end
 
-  def create_1_to_1_refresh_triggers_for(tt, ot, fk)
+  # Origin table primary key
+  def create_1_to_1_refresh_triggers_for(tt, ot, fk, otpk)
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
-               if old.id = new.id then
+               if old.#{otpk} = new.#{otpk} then
                  perform refresh_#{tt}_row(new.#{fk});
                else
                  perform refresh_#{tt}_row(old.#{fk});
@@ -65,17 +66,17 @@ module MaterializedViews
 
   # mttfk Middle table foreign key pointing to the target table
   # mtofk Middle table foreign key pointing to the origin table
-  # pk  Middle table primary key
+  # otpk  Origin table primary key
   def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, pk)
     execute "create or replace function #{tt}_update_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
-               if old.id = new.id then
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{pk};
+               if old.#{otpk} = new.#{otpk} then
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{otpk};
                else
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.#{pk};
-                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{pk};
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = old.#{otpk};
+                 perform refresh_#{tt}_row(#{mtttfk}) from #{mt} where #{mtotfk} = new.#{otpk};
                end if;
                return null;
              end
