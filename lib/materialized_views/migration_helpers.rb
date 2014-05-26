@@ -32,7 +32,7 @@ module MaterializedViews
 
   # Origin table primary key
   def create_1_to_1_refresh_triggers_for(tt, ot, fk)
-    execute "create or replace function #{tt}_on_update_in_#{ot}()
+    execute "create or replace function #{tt}_u_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -45,7 +45,7 @@ module MaterializedViews
              return null;
              end $$;"
 
-    execute "create or replace function #{tt}_on_insert_in_#{ot}()
+    execute "create or replace function #{tt}_i_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -53,7 +53,7 @@ module MaterializedViews
              return null;
              end $$;"
 
-    execute "create or replace function #{tt}_on_delete_in_#{ot}()
+    execute "create or replace function #{tt}_d_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -69,7 +69,7 @@ module MaterializedViews
   # otpk  Origin table primary key
   def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, otpk)
 
-    execute "create or replace function #{tt}_on_update_in_#{ot}_through_#{mt}()
+    execute "create or replace function #{tt}_u_#{ot}_#{mt}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -88,8 +88,8 @@ module MaterializedViews
 
   def create_triggers_on(tt, ot, mt, trigger_types)
     trigger_types.each do |type|
-      name = "#{tt}_on_#{type}_in_#{ot}"
-      name += "_through_#{mt}" if mt
+      name = "#{tt}_#{type[0]}_#{ot}"
+      name += "_#{mt}" if mt
       execute "create trigger #{name}
                after #{type} on #{ot}
                for each row execute procedure #{name}();"
