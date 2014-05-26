@@ -89,7 +89,7 @@ module MaterializedViews
   def create_triggers_on(tt, ot, mtotfk, trigger_types)
     trigger_types.each do |type|
       name = "#{tt}_#{type[0]}_#{ot}"
-      name += "_#{mtotfk}" if mt
+      name += "_#{mtotfk}" if mtotfk
       execute "create trigger #{name}
                after #{type} on #{ot}
                for each row execute procedure #{name}();"
