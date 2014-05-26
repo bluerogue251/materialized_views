@@ -32,7 +32,7 @@ module MaterializedViews
 
   # Origin table primary key
   def create_1_to_1_refresh_triggers_for(tt, ot, fk)
-    execute "create or replace function #{tt}_update_#{ot}()
+    execute "create or replace function refresh_#{tt}_on_update_in_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -45,7 +45,7 @@ module MaterializedViews
              return null;
              end $$;"
 
-    execute "create or replace function #{tt}_insert_#{ot}()
+    execute "create or replace function refresh_#{tt}_on_insert_in_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -53,7 +53,7 @@ module MaterializedViews
              return null;
              end $$;"
 
-    execute "create or replace function #{tt}_delete_#{ot}()
+    execute "create or replace function refresh_#{tt}_on_delete_in_#{ot}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -61,7 +61,7 @@ module MaterializedViews
              return null;
              end $$;"
 
-    create_triggers_on(tt, ot, ['insert', 'update', 'delete'])
+    create_triggers_on(tt, ot, nil, ['insert', 'update', 'delete'])
   end
 
   # mttfk Middle table foreign key pointing to the target table
@@ -69,7 +69,7 @@ module MaterializedViews
   # otpk  Origin table primary key
   def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, otpk)
 
-    execute "create or replace function #{tt}_update_#{ot}()
+    execute "create or replace function refresh_#{tt}_on_update_in_#{ot}_through_#{mt}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -83,14 +83,16 @@ module MaterializedViews
              end
              $$;"
 
-    create_triggers_on(tt, ot, ['update'])
+    create_triggers_on(tt, ot, mt, ['update'])
   end
 
-  def create_triggers_on(tt, ot, trigger_types)
+  def create_triggers_on(tt, ot, mt, trigger_types)
     trigger_types.each do |type|
-    execute "create trigger refresh_#{tt}_#{type}
-             after #{type} on #{ot}
-             for each row execute procedure #{tt}_#{type}_#{ot}();"
+      name = "refresh_#{tt}_on_#{type}_in_#{ot}"
+      name += "_through_#{mt}" if mt
+      execute "create trigger #{name}
+               after #{type} on #{ot}
+               for each row execute procedure #{name}();"
     end
   end
 end
