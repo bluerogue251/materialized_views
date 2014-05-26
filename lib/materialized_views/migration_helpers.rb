@@ -69,7 +69,7 @@ module MaterializedViews
   # otpk  Origin table primary key
   def create_1_to_n_refresh_triggers_for(tt, ot, mt, mtttfk, mtotfk, otpk)
 
-    execute "create or replace function #{tt}_u_#{ot}_#{mt}()
+    execute "create or replace function #{tt}_u_#{ot}_#{mtotfk}()
              returns trigger
              language 'plpgsql' as $$
              begin
@@ -83,13 +83,13 @@ module MaterializedViews
              end
              $$;"
 
-    create_triggers_on(tt, ot, mt, ['update'])
+    create_triggers_on(tt, ot, mtotfk, ['update'])
   end
 
-  def create_triggers_on(tt, ot, mt, trigger_types)
+  def create_triggers_on(tt, ot, mtotfk, trigger_types)
     trigger_types.each do |type|
       name = "#{tt}_#{type[0]}_#{ot}"
-      name += "_#{mt}" if mt
+      name += "_#{mtotfk}" if mt
       execute "create trigger #{name}
                after #{type} on #{ot}
                for each row execute procedure #{name}();"
