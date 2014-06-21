@@ -19,6 +19,7 @@ module MaterializedViews
     def initialize(unmaterialized_name)
       @unm_name = unmaterialized_name
       @mat_name = materialized_name
+      @mat      = @mat_name.constantize
       @primary_key = 'id'
     end
 
