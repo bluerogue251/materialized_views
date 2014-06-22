@@ -1,53 +1,26 @@
 module MaterializedViews
 
-  def self.gold_standard_test(views)
-    result = ''
-    views.each { |view| result << GoldStandardTest.new(view).result }
-    result
-  end
-
-  def self.list
-    all_views = ActiveRecord::Base.connection.query('SELECT viewname
-                                                     FROM pg_views
-                                                     WHERE schemaname = ANY (current_schemas(false))',
-                                                     'SCHEMA').map { |row| row[0] }
-    all_views.keep_if { |view| view.end_with? '_unmaterialized' }
-  end
-
   class GoldStandardTest
 
-    def initialize(unmaterialized_name)
-      @unm_name = unmaterialized_name
-      @mat_name = materialized_name
-      @mat      = @mat_name.constantize
-      @primary_key = 'id'
+    def initialize(model)
+      @model       = model
+      @mat_name    = model.table_name
+      @unm_name    = materialized_name + '_unmaterialized'
+      @columns     = model.column_names - ['tsv']
+      @pk          = model.primary_key
     end
 
     def result
-      result = "\n\n\n{@mat_name}\n"
-      result += row_comparison
+      @columns.each do |column|
+        puts "#{row_comparison_query(column)} rows differ on #{column}"
+      end
     end
 
     private
 
-      def materialized_name
-        @unm_name[/(.*)(_unmaterialized\z)/]
-        $1
+      def row_comparison_query(column)
+        @model.joins("#{@unm_name} unm on #{@mat_name}.#{@pk} = unm.#{@pk}").where("#{@mat_name}.#{column} != unm.#{column}").count
       end
 
-      def row_comparison
-        count = ActiveRecord::Base.connection.query(row_comparison_query).first[0]
-        "#{count} rows differ"
-      end
-
-      def row_comparison_query
-        columns     = @mat.column_names - ['tsv']
-        mat_columns = columns.map { |c|   "#{@mat_name}.#{c}" }.sort.join ', '
-        unm_columns = columns.map { |c| "#{@unm_name}.#{c}" }.sort.join ', '
-        "select count(*) from #{@unm_name}
-         LEFT OUTER JOIN #{@mat_name}
-           ON #{@mat_name}.#{@primary_key} = #{@unm_name}.#{@primary_key}
-         WHERE concat(#{mat_columns}) != concat(#{unm_columns})"
-      end
   end
 end
