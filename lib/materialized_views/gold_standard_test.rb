@@ -5,7 +5,7 @@ module MaterializedViews
     def initialize(model)
       @model       = model
       @mat_name    = model.table_name
-      @unm_name    = materialized_name + '_unmaterialized'
+      @unm_name    = @mat_name + '_unmaterialized'
       @columns     = model.column_names - ['tsv']
       @pk          = model.primary_key
     end
