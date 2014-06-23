@@ -19,7 +19,7 @@ module MaterializedViews
     private
 
       def row_comparison_query(column)
-        @model.joins("LEFT OUTER JOIN #{@unm_name} unm on #{@mat_name}.#{@pk} = unm.#{@pk}").where("COALSECE(#{@mat_name}.#{column}, '') != COALESCE(unm.#{column}, '')").count
+        @model.joins("LEFT OUTER JOIN #{@unm_name} unm on #{@mat_name}.#{@pk} = unm.#{@pk}").where("COALSECE(#{@mat_name}.#{column}, ''::text) != COALESCE(unm.#{column}, ''::text)").count
       end
 
   end
