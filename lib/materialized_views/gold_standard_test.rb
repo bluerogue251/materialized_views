@@ -4,7 +4,7 @@ module MaterializedViews
 
     def initialize(model)
       @model                = model
-      @materialized_table   = model.table
+      @materialized_table   = model.table_name
       @unmaterialized_table = @materialized_table + '_unmaterialized'
       @columns              = (model.column_names - ['tsv']).join(',')
     end
