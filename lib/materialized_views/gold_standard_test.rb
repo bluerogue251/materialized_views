@@ -14,4 +14,5 @@ module MaterializedViews
                                UNION
                                SELECT #{@columns} FROM #{@unmaterialized_table} EXCEPT SELECT #{@columns} FROM #{@materialized_table}").to_yaml
     end
+  end
 end
