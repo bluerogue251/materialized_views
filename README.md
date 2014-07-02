@@ -1,10 +1,8 @@
 # materialized_views [![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
 
-NOT ALL THE FUNCTIONALITY IN THIS README IS IMPLEMENTED YET.
-
 Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views in Postgres.
 
-Can perform a gold standard test to check if a materialized view is up-to-date with its unmaterialized version.
+Can perform [gold standard tests](http://blog.codeclimate.com/blog/2014/02/20/gold-master-testing/) to check if a materialized view is up-to-date with its unmaterialized version.
 
 ## Installation
 
@@ -86,9 +84,7 @@ Example:
     namespace :materialized do
       desc 'Tests that materialized views are up to date'
       task test: :environment do
-        view_names = MaterializedViews.list
-        result = MaterializedViews.gold_standard_test(view_names)
-        puts result # or you could email the result to yourself, or put it into a file for later viewing
+        MaterializedViews.gold_standard_test(OrderSummary).result
       end
     end
 
@@ -107,10 +103,9 @@ Example:
 
 And then configure `pg_search` or whatever you are using to use the resulting tsvector column.
 
-
 ## Note on materialized views vs. tables
 
-For compatibility with older versions of Postgres, these create 'tables', NOT 'materialized views'. Postgres 'materialized views' do not have enough functionality yet to make it worth using them over plain tables.
+For compatibility with older versions of Postgres, these create 'tables', NOT 'materialized views'.
 
 ## Contributing
 
