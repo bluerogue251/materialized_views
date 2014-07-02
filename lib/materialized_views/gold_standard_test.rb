@@ -3,24 +3,15 @@ module MaterializedViews
   class GoldStandardTest
 
     def initialize(model)
-      @model       = model
-      @mat_name    = model.table_name
-      @unm_name    = @mat_name + '_unmaterialized'
-      @columns     = model.column_names - ['tsv']
-      @pk          = model.primary_key
+      @model                = model
+      @materialized_table   = model.table
+      @unmaterialized_table = @materialized_table + '_unmaterialized'
+      @columns              = (model.column_names - ['tsv']).join(',')
     end
 
     def result
-      @columns.each do |column|
-        puts "#{row_comparison_query(column)} rows differ on #{column}"
-      end
+      puts @model.find_by_sql("SELECT #{@columns} FROM #{@materialized_table} EXCEPT SELECT #{@columns} FROM #{@unmaterialized_table}
+                               UNION
+                               SELECT #{@columns} FROM #{@unmaterialized_table} EXCEPT SELECT #{@columns} FROM #{@materialized_table}").to_yaml
     end
-
-    private
-
-      def row_comparison_query(column)
-        @model.joins("LEFT OUTER JOIN #{@unm_name} unm on #{@mat_name}.#{@pk} = unm.#{@pk}").where("COALSECE(#{@mat_name}.#{column}, ''::text) != COALESCE(unm.#{column}, ''::text)").count
-      end
-
-  end
 end
