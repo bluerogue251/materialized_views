@@ -38,7 +38,7 @@ Example:
 
 If your materialized view's primary key is not an integer or is not named 'id':
 
-    create_refresh_row_function_for 'order_summaries', pk: 'order_code', pk_type: 'text'
+    create_refresh_row_function_for 'order_summaries', primary_key: 'order_code', primary_key_data_type: 'text'
 
 ### Create 1 to 1 refresh triggers
 

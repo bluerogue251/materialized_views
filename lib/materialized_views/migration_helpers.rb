@@ -19,7 +19,9 @@ module MaterializedViews
   # mtfk = middle table foreign key
   # fk = foreign_key
 
-  def create_refresh_row_function_for(tt, pk, type = 'integer')
+  def create_refresh_row_function_for(tt, options={})
+    pk   = options[:primary_key]           || 'id'
+    type = options[:foreign_key_data_type] || 'integer'
     execute "create or replace function refresh_#{tt}_row(row_id #{type})
              returns void
              language 'plpgsql' as $$
