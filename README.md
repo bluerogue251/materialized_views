@@ -4,6 +4,35 @@ Extends `ActiveRecord::Migration` with methods for creating auto-updating materi
 
 Can perform [gold standard tests](http://blog.codeclimate.com/blog/2014/02/20/gold-master-testing/) to check if a materialized view is up-to-date with its unmaterialized version.
 
+## What is a materialized view?
+
+Single database tables return data that is not very human-friendly, like this:
+
+| id | client_id | factory_id | service_id | booking_id |
+|----|-----------|------------|------------|------------|
+| 1  | 9748      | 654        | 0988       | 2333       |
+
+In contrast, database views can pull data from many tables and are human-friendly, like this:
+
+| id | client_name                | factory_name                     | service_description | booking_start_date |
+|----|----------------------------|----------------------------------|---------------------|--------------------|
+| 2  | Manufacturing Corps, LLC   | California silicon supplier, ltd | Quality inspection  | 1999-12-25         |
+
+The problem with database views is that they cannot be indexed, so with large
+datasets, performance can become an issue. A materialized view is a database
+table that stores a cached copy of a regular view. This makes it possible to
+add indexes that make full-text searching, filtering, and sorting orders of
+magnitude faster than with a non-cached view.
+
+Here are some other resources:
+
+* Dan Chak's [chapter on Materialized Views](http://dan.chak.org/enterprise-rails/chapter-12-materialized-views/) from his book *Enterprise Rails*
+
+* A [blog post](http://bluerogue251.wordpress.com/2014/03/23/354/) I wrote on materialized views.
+
+* [Suggestions on alternatives](http://bluerogue251.wordpress.com/2014/09/23/materialized-view-alternatives/) to materialized views.
+
+
 ## Installation
 
 Add `gem 'materialized_views'` to your application's Gemfile and then execute `$ bundle`
