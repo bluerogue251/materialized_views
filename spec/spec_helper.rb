@@ -1,4 +1,5 @@
 require_relative '../config/active_record_connection'
+require 'support/model_class_definitions'
 require 'materialized_views'
 
 RSpec.configure do |config|

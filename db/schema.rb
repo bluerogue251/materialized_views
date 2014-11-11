@@ -20,9 +20,8 @@ ActiveRecord::Schema.define(version: 2) do
     t.string "name"
   end
 
-  create_table "materialized_clients", id: false, force: true do |t|
-    t.integer "id"
-    t.string  "name"
+  create_table "materialized_clients", force: true do |t|
+    t.string "name"
   end
 
 end
