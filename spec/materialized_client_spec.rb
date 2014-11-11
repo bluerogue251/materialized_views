@@ -1,26 +1,29 @@
 require 'spec_helper'
 
+class Client < ActiveRecord::Base
+end
+
 class MaterializedClient < ActiveRecord::Base
 end
 
-class UnmaterializedClient < ActiveRecord::Base
-end
-
 describe MaterializedClient do
-  describe 'Stays up to date' do
-    describe 'Relative to its unmaterialized version' do
-      specify 'On insertions, updates, and deletions' do
-        unm_client = UnmaterializedClient.create(name: 'new client')
-        mat_client = MaterializedClient.find_by(name: 'new client')
+  let(:client_name)         { 'test client name' }
+  let!(:client)              { Client.create(name: client_name) }
+  let(:materialized_client)  { MaterializedClient.find_by(id: client.id) }
 
-        UnmaterializedClient.count.should == 1
-        MaterializedClient.count.should == 1
+  it 'Stays up to date after insert' do
+    both_should_have_counts_of(1)
+    materialized_client.name.should == client_name
+  end
 
-        MaterializedClient.first.name.should == 'new client'
-        UnmaterializedClient.first.name.should == 'new client'
+  it 'Stays up to date after update' do
+    client.update!(name: 'new test client name')
+    both_should_have_counts_of(1)
+    materialized_client.name.should == 'new test client name'
+  end
 
-
-      end
-    end
+  def both_should_have_counts_of(count)
+    Client.count.should == count
+    MaterializedClient.count.should == count
   end
 end

@@ -1,13 +1,9 @@
-require 'active_record'
-require 'yaml'
+require_relative '../config/active_record_connection'
 require 'materialized_views'
-
-dbconfig = YAML::load(File.open('db/config.yml'))
-ActiveRecord::Base.establish_connection(dbconfig)
 
 RSpec.configure do |config|
   config.before(:each) do
-    UnmaterializedClient.delete_all
+    Client.delete_all
     MaterializedClient.delete_all
   end
 end
