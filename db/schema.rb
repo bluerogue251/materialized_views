@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2) do
+ActiveRecord::Schema.define(version: 100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,12 @@ ActiveRecord::Schema.define(version: 2) do
 
   create_table "materialized_clients", force: true do |t|
     t.string "name"
+    t.text   "service_names"
+  end
+
+  create_table "services", force: true do |t|
+    t.integer "client_id"
+    t.string  "name"
   end
 
 end
