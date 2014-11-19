@@ -10,6 +10,6 @@ Gem::Specification.new do |spec|
   spec.homepage      = ""
   spec.license       = "MIT"
 
-  spec.add_dependency "active_record_migrations"
-  spec.add_dependency "pg"
+  spec.add_development_dependency "active_record_migrations"
+  spec.add_development_dependency "pg"
 end
