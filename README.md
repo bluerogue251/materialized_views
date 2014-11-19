@@ -1,4 +1,8 @@
-# materialized_views [![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
+# materialized_views
+====================
+
+[![Code Climate](https://codeclimate.com/github/bluerogue251/materialized_views.png)](https://codeclimate.com/github/bluerogue251/materialized_views)
+[![Build Status](https://travis-ci.org/bluerogue251/materialized_views.svg)](https://travis-ci.org/bluerogue251/materialized_views)
 
 Extends `ActiveRecord::Migration` with methods for creating auto-updating materialized views in Postgres.
 
@@ -104,8 +108,7 @@ This one is a good candidate for a Rake task.  It does not go inside a migration
 
 Syntax:
 
-    views = MaterializedViews.list
-    MaterializedViews.gold_standard_test(views)
+    MaterializedViews.gold_standard_test(ActiveRecordModelName)
 
 Example:
 
@@ -142,4 +145,4 @@ For compatibility with older versions of Postgres, these create 'tables', NOT 'm
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+5. Create a Pull Request

@@ -1,0 +1,20 @@
+language: ruby
+rvm:
+  - 2.0.0
+  - 2.1.1
+  - 2.1.2
+before_install:
+  - "echo '--colour' > ~/.rspec"
+  - "echo 'gem: --no-document' > ~/.gemrc"
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+before_script:
+  - cp db/config.yml.travis db/config.yml
+  - bundle exec rake db:create db:migrate --trace
+
+notifications:
+  email: false
+addons:
+  postgresql: "9.3"
+script:
+  - bundle exec rspec spec/

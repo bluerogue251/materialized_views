@@ -1,0 +1,11 @@
+postgres: &postgres
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  pool: 5
+  username: postgres
+
+test:
+  <<: *postgres
+  database: materialized_views_test
+
