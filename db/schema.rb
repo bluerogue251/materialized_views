@@ -17,12 +17,18 @@ ActiveRecord::Schema.define(version: 100) do
   enable_extension "plpgsql"
 
   create_table "clients", force: true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "region_id"
   end
 
   create_table "materialized_clients", force: true do |t|
     t.string "name"
     t.text   "service_names"
+    t.string "region_name"
+  end
+
+  create_table "regions", force: true do |t|
+    t.string "name"
   end
 
   create_table "services", force: true do |t|
