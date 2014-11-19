@@ -1,3 +1,7 @@
 *.swp
+*.gem
+Gemfile.lock
+.bundle
+pkg
 .ruby-version
 bin
