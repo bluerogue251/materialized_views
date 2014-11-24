@@ -11,20 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 100) do
+ActiveRecord::Schema.define(version: 30000000000000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "client_contact_assignments", force: true do |t|
+    t.integer "client_id"
+    t.integer "contact_id"
+  end
 
   create_table "clients", force: true do |t|
     t.string  "name"
     t.integer "region_id"
   end
 
+  create_table "contacts", force: true do |t|
+    t.string "name"
+  end
+
   create_table "materialized_clients", force: true do |t|
     t.string "name"
     t.text   "service_names"
     t.string "region_name"
+    t.text   "contact_names"
   end
 
   create_table "regions", force: true do |t|
