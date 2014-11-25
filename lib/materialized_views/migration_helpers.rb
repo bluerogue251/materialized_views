@@ -28,7 +28,6 @@ module MaterializedViews
              begin
                delete from #{tt} where #{tt}.#{pk} = row_id;
                insert into #{tt} (select * from #{tt}_unmaterialized unm where unm.#{pk} = row_id);
-               update #{tt} set #{pk} = #{pk} where #{pk} = row_id;
              end $$;"
   end
 
